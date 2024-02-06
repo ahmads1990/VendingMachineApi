@@ -6,6 +6,7 @@
         public string ProductName { get; set; }
         public int Cost { get; set; }
         public int AmountAvailable { get; set; }
-        //public string SellerId { get; set; }
+        public string SellerId { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
     }
 }
