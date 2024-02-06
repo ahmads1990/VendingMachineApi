@@ -6,6 +6,7 @@ using System.Text;
 using VendingMachineApi.Helpers;
 using VendingMachineApi.Models;
 using VendingMachineApi.Services;
+using VendingMachineApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 // Security
 // configure jwt helper class to use jwt config info
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
+
 // add Identity with options configuration
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
     options.Password.RequireDigit = true;
@@ -31,6 +33,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
     options.Password.RequireUppercase = true;
     options.Password.RequireLowercase = true;
 }).AddEntityFrameworkStores<AppDbContext>();
+
 // Add Authentication with jwt config
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -54,6 +57,9 @@ builder.Services.AddAuthentication(options => {
 //Add Authorization
 builder.Services.AddAuthorization();
 
+// DI
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -65,6 +71,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
