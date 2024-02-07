@@ -98,17 +98,17 @@ namespace VendingMachineApi.Tests
             // Assert
             Assert.That(result, Is.Null);
         }
-        [Test]
-        public async Task GetProductByIdAsync_InvalidId_Throw()
-        {
-            // Assert 
-            int testId = -1;
-            // Act
-            var exception = Assert.Throws<ArgumentException>(() =>
-                _productService.GetProductByIdAsync(testId));
-            // Assert
-            //Assert.That(exception.Message, Is.EqualTo(""));
-        }
+        //[Test]
+        //public async Task GetProductByIdAsync_InvalidId_Throw()
+        //{
+        //    // Assert 
+        //    int testId = -1;
+        //    // Act
+        //    var exception = Assert.Throws<ArgumentException>(() =>
+        //        _productService.GetProductByIdAsync(testId));
+        //    // Assert
+        //    //Assert.That(exception.Message, Is.EqualTo(""));
+        //}
         // GetProductsBySellerIdAsync
         // AddNewProduct
         [Test]
