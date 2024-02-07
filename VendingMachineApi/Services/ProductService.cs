@@ -17,7 +17,16 @@ namespace VendingMachineApi.Services
 
         public async Task<IEnumerable<Product>> GetProductsBySellerIdAsync(string sellerId) =>
             await _dbContext.Products.Where(p => p.SellerId == sellerId).ToListAsync();
+        public async Task<bool> CheckHasEnoughAvailableAmount(int productId, int amount)
+        {
+            if (amount <= 0)
+                throw new ArgumentException(ExceptionMessages.InvalidProductCostOrAmount);
 
+            var product = await GetProductByIdAsync(productId);
+            if (product is null)
+                throw new ArgumentException(ExceptionMessages.EntityDoesntExist);
+            return product.AmountAvailable <= amount;
+        }
         public async Task<Product> AddNewProduct(Product product)
         {
             // Check if entry is null or product has null values
