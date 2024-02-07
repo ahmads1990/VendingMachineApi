@@ -10,19 +10,25 @@ namespace VendingMachineApi.Controllers
     [Route("[controller]")]
     public class ProductsController : ControllerBase
     {
+        private readonly ILogger<ProductsController> _logger;
         private readonly IProductService _productService;
-        public ProductsController(IProductService productService)
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
         {
             _productService = productService;
+            _logger = logger;
         }
         // Get All
         [HttpGet("GetAllProducts")]
         [AllowAnonymous]
         public async Task<IActionResult> GetAllProducts()
         {
+            _logger.LogInformation("Seri Log is Working");
+
             var allProducts = await _productService.GetAllProductsAsync();
             if (allProducts.IsNullOrEmpty())
                 return Ok("No products for selling");
+
+            _logger.LogInformation("Returned AllProducts");
             return Ok(allProducts);
         }
         // Get by id
@@ -33,6 +39,8 @@ namespace VendingMachineApi.Controllers
             var product = await _productService.GetProductByIdAsync(productId);
             if (product is null)
                 return NotFound(ExceptionMessages.EntityDoesntExist);
+
+            _logger.LogInformation("Returned Product By Id");
             return Ok(product);
         }
         // Get User's products by user id
@@ -50,6 +58,8 @@ namespace VendingMachineApi.Controllers
             if (sellerId != userId) return Unauthorized(ExceptionMessages.UnAuthorizedSeller);
 
             var sellerProducts = await _productService.GetProductsBySellerIdAsync(sellerId);
+
+            _logger.LogInformation("Returned Product By SellerId");
             return Ok(sellerProducts);
         }
         // Add new product
@@ -57,7 +67,8 @@ namespace VendingMachineApi.Controllers
         public async Task<IActionResult> AddNewProduct(ProductDto newProductDto)
         {
             // check that sender is a seller user
-            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER))
+                return Unauthorized(ExceptionMessages.OnlySellerUser);
 
             try
             {
@@ -73,10 +84,12 @@ namespace VendingMachineApi.Controllers
                 };
 
                 var response = await _productService.AddNewProduct(newProduct);
+                _logger.LogInformation($"New product added successfully by seller {sellerId}");
                 return Ok(response);
             }
             catch (ArgumentException ex)
             {
+                _logger.LogError(ex, "Invalid request");
                 return BadRequest($"Invalid request: {ex.Message}");
             }
         }
@@ -92,16 +105,23 @@ namespace VendingMachineApi.Controllers
                 var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
                 var response = await _productService.UpdateProductAsync(productDto, sellerId);
-                if (response is null) return NotFound(ExceptionMessages.EntityDoesntExist);
+                if (response is null)
+                {
+                    _logger.LogInformation($"Product not found for update by seller {sellerId}");
+                    return NotFound(ExceptionMessages.EntityDoesntExist);
+                }
 
+                _logger.LogInformation($"Product updated successfully by seller {sellerId}");
                 return Ok(response);
             }
             catch (ArgumentException ex)
             {
+                _logger.LogError(ex, "Invalid request");
                 return BadRequest($"Invalid request: {ex.Message}");
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex, "Unauthorized request");
                 return Unauthorized($"Unauthorized request: {ex.Message}");
             }
         }
@@ -110,19 +130,26 @@ namespace VendingMachineApi.Controllers
         public async Task<IActionResult> RemoveProduct(int productId)
         {
             // check that sender is a seller user
-            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER))
+                return Unauthorized(ExceptionMessages.OnlySellerUser);
             try
             {
                 // get seller id
                 var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
                 // send product and seller ids to product service to delete the product
                 var response = await _productService.DeleteProductAsync(productId, sellerId);
-                if (response is null) return NotFound(ExceptionMessages.EntityDoesntExist);
+                if (response is null)
+                {
+                    _logger.LogInformation($"Product not found for removal by seller {sellerId}");
+                    return NotFound(ExceptionMessages.EntityDoesntExist);
+                }
 
+                _logger.LogInformation($"Product removed successfully by seller {sellerId}");
                 return Ok(response);
             }
             catch (UnauthorizedAccessException ex)
             {
+                _logger.LogError(ex, "Unauthorized request");
                 return Unauthorized($"Unauthorized request: {ex.Message}");
             }
         }
