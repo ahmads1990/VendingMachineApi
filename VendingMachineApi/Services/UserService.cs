@@ -7,11 +7,11 @@ using System.Text;
 
 namespace VendingMachineApi.Services
 {
-    public class AuthService : IAuthService
+    public class UserService : IUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly JwtConfig _jwtConfig;
-        public AuthService(UserManager<ApplicationUser> userManager, IOptions<JwtConfig> jwtConfig)
+        public UserService(UserManager<ApplicationUser> userManager, IOptions<JwtConfig> jwtConfig)
         {
             _userManager = userManager;
             _jwtConfig = jwtConfig.Value;

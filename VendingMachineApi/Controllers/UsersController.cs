@@ -6,17 +6,17 @@ namespace VendingMachineApi.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly IAuthService _authService;
+        private readonly IUserService _userService;
 
-        public UsersController(IAuthService authService)
+        public UsersController(IUserService userService)
         {
-            _authService = authService;
+            _userService = userService;
         }
 
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterAsync(RegisterModel registerModel)
         {
-            var result = await _authService.RegisterUserAsync(registerModel);
+            var result = await _userService.RegisterUserAsync(registerModel);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
@@ -26,7 +26,7 @@ namespace VendingMachineApi.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync(LoginModel loginModel)
         {
-            var result = await _authService.LoginUserAsync(loginModel);
+            var result = await _userService.LoginUserAsync(loginModel);
 
             if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
