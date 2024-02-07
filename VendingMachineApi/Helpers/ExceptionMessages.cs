@@ -7,7 +7,7 @@
         // Message for an invalid entity ID (create -> id=0, update/del -> +ve id>0).
         public static string InvalidEntitytId = "Invalid ProductId, wanted format (create -> id=0, update/del -> id>0).";
         // Message for when an entity doesn't exist for update/delete operations.
-        public static string EntityDoesntExist = "Check ID, can't find entity to update/delete.";
+        public static string EntityDoesntExist = "Check ID, can't find product with this id";
         public static string InvalidProductCostOrAmount = "Invalid product cost or amount, amount should be >0,cost should be >0 and divisble by 5 only accepting 5,10,15,20,50,100 coins";
         public static string UnAuthorizedSeller = "You cant update other sellers products";
 

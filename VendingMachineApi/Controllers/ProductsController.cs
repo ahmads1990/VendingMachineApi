@@ -32,7 +32,7 @@ namespace VendingMachineApi.Controllers
         {
             var product = await _productService.GetProductByIdAsync(productId);
             if (product is null)
-                return NotFound("Product not found");
+                return NotFound(ExceptionMessages.EntityDoesntExist);
             return Ok(product);
         }
         // Get User's products by user id
@@ -47,7 +47,7 @@ namespace VendingMachineApi.Controllers
 
             // Check that seller user (id == target id), seller can only check owned products
             var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-            if (sellerId != userId) return Unauthorized("Can't view another seller products");
+            if (sellerId != userId) return Unauthorized(ExceptionMessages.UnAuthorizedSeller);
 
             var sellerProducts = await _productService.GetProductsBySellerIdAsync(sellerId);
             return Ok(sellerProducts);
@@ -92,7 +92,7 @@ namespace VendingMachineApi.Controllers
                 var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
                 var response = await _productService.UpdateProductAsync(productDto, sellerId);
-                if (response is null) return NotFound("Product not found");
+                if (response is null) return NotFound(ExceptionMessages.EntityDoesntExist);
 
                 return Ok(response);
             }
@@ -117,7 +117,7 @@ namespace VendingMachineApi.Controllers
                 var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
                 // send product and seller ids to product service to delete the product
                 var response = await _productService.DeleteProductAsync(productId, sellerId);
-                if (response is null) return NotFound("Product not found");
+                if (response is null) return NotFound(ExceptionMessages.EntityDoesntExist);
 
                 return Ok(response);
             }
