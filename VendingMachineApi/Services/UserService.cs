@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using VendingMachineApi.Dtos;
 
 namespace VendingMachineApi.Services
 {
@@ -117,7 +118,17 @@ namespace VendingMachineApi.Services
 
             return jwtSecurityToken;
         }
-
+        public async Task<bool> CheckHaveEnoughDeposit(string userId, int deposit)
+        {
+            // Check if the deposit value is valid
+            if (deposit <= 0 && deposit % 5 != 0)
+                throw new ArgumentException(ExceptionMessages.InvalidProductCostOrAmount);
+            // Find the user by ID
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                throw new ArgumentException(ExceptionMessages.InvalidEntitytId);
+            return user?.Deposit >= deposit;
+        }
         public async Task<UpdateDepositModel> BuyerAddToDepositAsync(UpdateDepositModel updateDepositModel)
         {
             // Check if the deposit value is valid
