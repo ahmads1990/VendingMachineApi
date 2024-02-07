@@ -27,7 +27,7 @@ namespace VendingMachineApi.Services
             if (product is null || string.IsNullOrEmpty(product.ProductName) || string.IsNullOrEmpty(product.SellerId))
                 throw new ArgumentException("messager");
             // If product cost and AmountAvailable <= 0 throw error
-            if (product.Cost <= 0 || product.AmountAvailable <= 0)
+            if (product.Cost <= 0 || product.Cost % 5 != 0 || product.AmountAvailable <= 0)
                 throw new ArgumentException("");
             // Check that entry id is unassigned 0 (the database should assign the productId not user)  
             if (product.ProductId != 0)
