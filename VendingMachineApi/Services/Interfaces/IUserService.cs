@@ -4,5 +4,7 @@
     {
         Task<AuthModel> RegisterUserAsync(RegisterModel registerModel);
         Task<AuthModel> LoginUserAsync(LoginModel loginModel);
+        Task<UpdateDepositModel> BuyerAddToDepositAsync(UpdateDepositModel updateDepositModel);
+        Task<UpdateDepositModel> BuyerResetDepositAsync(UpdateDepositModel updateDepositModel);
     }
 }

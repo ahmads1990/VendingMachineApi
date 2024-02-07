@@ -117,5 +117,63 @@ namespace VendingMachineApi.Services
 
             return jwtSecurityToken;
         }
+
+        public async Task<UpdateDepositModel> BuyerAddToDepositAsync(UpdateDepositModel updateDepositModel)
+        {
+            // Check if the deposit value is valid
+            if (updateDepositModel.Deposit <= 0)
+            {
+                updateDepositModel.Message = $"Invalid deposit value {updateDepositModel.Deposit}. Deposit must be a positive number greater than 0.";
+                return updateDepositModel;
+            }
+
+            // Find the user by ID
+            var user = await _userManager.FindByIdAsync(updateDepositModel.BuyerId);
+            if (user == null)
+            {
+                // User not found, set error message
+                updateDepositModel.Message = $"User not found with ID {updateDepositModel.BuyerId}.";
+                return updateDepositModel;
+            }
+
+            // Update user's deposit
+            user.Deposit += updateDepositModel.Deposit;
+            var result = await _userManager.UpdateAsync(user);
+
+            // Check if user update was successful
+            if (!result.Succeeded)
+                // Set error message if update fails
+                updateDepositModel.Message = "Error updating user";
+
+            updateDepositModel.IsConfirmed = true;
+            updateDepositModel.Message = $"Succesfuly added more monet to this account, New balance {user.Deposit}";
+            return updateDepositModel;
+        }
+
+        public async Task<UpdateDepositModel> BuyerResetDepositAsync(UpdateDepositModel updateDepositModel)
+        {
+            // Find the user by ID
+            var user = await _userManager.FindByIdAsync(updateDepositModel.BuyerId);
+            if (user == null)
+            {
+                // User not found, set error message
+                updateDepositModel.Message = $"User not found with ID {updateDepositModel.BuyerId}.";
+                return updateDepositModel;
+            }
+            // Save user current deposit
+            updateDepositModel.Deposit = user.Deposit;
+            // Reset user's deposit to 0
+            user.Deposit = 0;
+            var result = await _userManager.UpdateAsync(user);
+
+            // Check if user update was successful
+            if (!result.Succeeded)
+                // Set error message if update fails
+                updateDepositModel.Message = "Error updating user";
+
+            updateDepositModel.IsConfirmed = true;
+            updateDepositModel.Message = $"Succesfuly reseted the account balance here is your money {updateDepositModel.Deposit}";
+            return updateDepositModel;
+        }
     }
 }
