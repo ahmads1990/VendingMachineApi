@@ -43,7 +43,7 @@ namespace VendingMachineApi.Controllers
             if (sellerId == null) return BadRequest(string.Empty);
 
             // check that user sending the requset is a seller if not return bad request 
-            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized("Only seller users are allowed to have products");
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
 
             // Check that seller user (id == target id), seller can only check owned products
             var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
@@ -57,7 +57,7 @@ namespace VendingMachineApi.Controllers
         public async Task<IActionResult> AddNewProduct(ProductDto newProductDto)
         {
             // check that sender is a seller user
-            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized("Only seller users are allowed to have products");
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
 
             try
             {
@@ -85,7 +85,7 @@ namespace VendingMachineApi.Controllers
         public async Task<IActionResult> UpdateProductById(ProductDto productDto)
         {
             // check that sender is a seller user
-            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized("Only seller users are allowed to have products");
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
             try
             {
                 // get seller id
@@ -110,7 +110,7 @@ namespace VendingMachineApi.Controllers
         public async Task<IActionResult> RemoveProduct(int productId)
         {
             // check that sender is a seller user
-            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized("Only seller users are allowed to have products");
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
             try
             {
                 // get seller id
