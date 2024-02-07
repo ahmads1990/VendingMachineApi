@@ -12,10 +12,12 @@ namespace VendingMachineApi.Controllers
     {
         private readonly ILogger<ProductsController> _logger;
         private readonly IProductService _productService;
-        public ProductsController(IProductService productService, ILogger<ProductsController> logger)
+        private readonly IUserService _userService;
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger, IUserService userService)
         {
             _productService = productService;
             _logger = logger;
+            _userService = userService;
         }
         // Get All
         [HttpGet("GetAllProducts")]
@@ -151,6 +153,48 @@ namespace VendingMachineApi.Controllers
             {
                 _logger.LogError(ex, "Unauthorized request");
                 return Unauthorized($"Unauthorized request: {ex.Message}");
+            }
+        }
+        [HttpPost("Buy")]
+        public async Task<IActionResult> BuyProduct(BuyProductModel buyProductModel)
+        {
+            // check that sender is a buyer user
+            if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISBUYER))
+                return Unauthorized(ExceptionMessages.OnlyBuyerUser);
+            try
+            {
+                // get buyer id
+                var buyerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                // get product
+                var product = await _productService.GetProductByIdAsync(buyProductModel.ProductId);
+                // Check amount
+                if (product.AmountAvailable < buyProductModel.Quantity)
+                    return BadRequest();
+                // Enough amount can be purchased, Check users balance
+                int orderCost = buyProductModel.Quantity * product.Cost;
+                var canUserAffordIt = await _userService.CheckHaveEnoughDeposit(buyerId, orderCost);
+                if (!canUserAffordIt)
+                    return BadRequest("You cannot afford it");
+                // All Checks done procceed to do it
+                // update product amount
+                var productDto = new ProductDto
+                {
+                    ProductId = product.ProductId,
+                    AmountAvailable = product.AmountAvailable,
+                    Cost = product.Cost,
+                    ProductName = product.ProductName
+                };
+                productDto.AmountAvailable -= buyProductModel.Quantity;
+                var updatedProduct = await _productService.UpdateProductAsync(productDto, product.SellerId);
+                // TODO add money to the seller
+
+                // send user their cash
+                return Ok("Here is your change");
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
         }
     }
