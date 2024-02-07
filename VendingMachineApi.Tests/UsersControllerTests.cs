@@ -190,10 +190,7 @@ namespace VendingMachineApi.Tests
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
 
             var badRequestObjectResult = result as BadRequestObjectResult;
-            Assert.That(badRequestObjectResult?.Value, Is.InstanceOf<UpdateDepositModel>());
-
-            var updateDepositModel = badRequestObjectResult.Value as UpdateDepositModel;
-            Assert.That(updateDepositModel?.Deposit, Is.EqualTo(expectedDeposit));
+            Assert.That(badRequestObjectResult?.Value, Is.InstanceOf<string>());
         }
         [Test]
         public async Task AddToDeposit_UnauthorizedUser_UnauthorizedResult()

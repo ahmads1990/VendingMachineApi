@@ -52,8 +52,8 @@ namespace VendingMachineApi.Controllers
             };
 
             var result = await _userService.BuyerAddToDepositAsync(updateDepositModel);
-            if (!string.IsNullOrEmpty(updateDepositModel.Message))
-                BadRequest(result.Message);
+            if (!result.IsConfirmed)
+                return BadRequest(result.Message);
 
             return Ok(result);
         }
@@ -73,8 +73,8 @@ namespace VendingMachineApi.Controllers
             };
 
             var result = await _userService.BuyerResetDepositAsync(updateDepositModel);
-            if (!string.IsNullOrEmpty(updateDepositModel.Message))
-                BadRequest(result.Message);
+            if (!result.IsConfirmed)
+                return BadRequest(result.Message);
 
             return Ok(result);
         }
