@@ -239,7 +239,7 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = 1, ProductName = "UpdatedProduct1", AmountAvailable = 6, Cost = 15 };
             string sellerId = "s2";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var result = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
         }
         [Test]

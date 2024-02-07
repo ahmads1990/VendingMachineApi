@@ -48,7 +48,7 @@ namespace VendingMachineApi.Services
                 throw new ArgumentException("messager");
 
             // Check if new values for product cost and AmountAvailable are invalid <=0
-            if (productDto.Cost <= 0 || productDto.AmountAvailable <= 0) throw new ArgumentException("");
+            if (productDto.Cost <= 0 || productDto.Cost % 5 != 0 || productDto.AmountAvailable <= 0) throw new ArgumentException("");
 
             // Get product to be Updated
             var productToBeUpdated = await GetProductByIdAsync(productDto.ProductId);
@@ -73,7 +73,7 @@ namespace VendingMachineApi.Services
         public async Task<Product?> DeleteProductAsync(int productId, string sellerId)
         {
             // Check for valid product id (positive number) and seller id (non null/empty string)
-            if (productId<= 0 || string.IsNullOrEmpty(sellerId)) throw new ArgumentException("");
+            if (productId <= 0 || string.IsNullOrEmpty(sellerId)) throw new ArgumentException("");
 
             // Chech the product exists in database
             var productToBeDeleted = await GetProductByIdAsync(productId);
