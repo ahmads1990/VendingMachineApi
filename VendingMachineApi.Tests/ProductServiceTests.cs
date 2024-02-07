@@ -1,15 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VendingMachineApi.Helpers;
 using VendingMachineApi.Models;
 using VendingMachineApi.Services;
 using VendingMachineApi.Services.Interfaces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace VendingMachineApi.Tests
 {
@@ -314,7 +308,7 @@ namespace VendingMachineApi.Tests
             int testId = 0;
             string sellerId = product.SellerId;
             // Act
-            var exception = Assert.ThrowsAsync<ArgumentException>(async()=>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.DeleteProductAsync(productIndex, sellerId));
 
             Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntitytId));

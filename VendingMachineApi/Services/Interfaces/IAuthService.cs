@@ -1,6 +1,4 @@
-﻿using VendingMachineApi.Dtos;
-
-namespace VendingMachineApi.Services.Interfaces
+﻿namespace VendingMachineApi.Services.Interfaces
 {
     public interface IAuthService
     {

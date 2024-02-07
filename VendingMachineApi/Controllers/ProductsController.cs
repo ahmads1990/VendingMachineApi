@@ -1,12 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
-using VendingMachineApi.Dtos;
-using VendingMachineApi.Helpers;
-using VendingMachineApi.Models;
-using VendingMachineApi.Services.Interfaces;
 
 namespace VendingMachineApi.Controllers
 {

@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using VendingMachineApi.Helpers;
-using VendingMachineApi.Models;
 using VendingMachineApi.Services;
-using VendingMachineApi.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +23,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("Jwt"));
 
 // add Identity with options configuration
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
     options.Password.RequireDigit = true;
     options.Password.RequiredLength = 8;
     options.Password.RequireNonAlphanumeric = true;
@@ -35,7 +33,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 }).AddEntityFrameworkStores<AppDbContext>();
 
 // Add Authentication with jwt config
-builder.Services.AddAuthentication(options => {
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;

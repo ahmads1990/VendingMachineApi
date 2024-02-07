@@ -1,7 +1,4 @@
-﻿using VendingMachineApi.Dtos;
-using VendingMachineApi.Models;
-
-namespace VendingMachineApi.Services.Interfaces
+﻿namespace VendingMachineApi.Services.Interfaces
 {
     public interface IProductService
     {

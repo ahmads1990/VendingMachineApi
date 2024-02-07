@@ -1,8 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using VendingMachineApi.Dtos;
-using VendingMachineApi.Helpers;
-using VendingMachineApi.Models;
-using VendingMachineApi.Services.Interfaces;
 
 namespace VendingMachineApi.Services
 {
@@ -50,7 +46,7 @@ namespace VendingMachineApi.Services
             if (string.IsNullOrEmpty(sellerId) || productDto.ProductId <= 0)
                 throw new ArgumentException(ExceptionMessages.InvalidEntitytId);
             // Check if new values for product cost and AmountAvailable are invalid <=0
-            if (productDto.Cost <= 0 || productDto.Cost % 5 != 0 || productDto.AmountAvailable <= 0) 
+            if (productDto.Cost <= 0 || productDto.Cost % 5 != 0 || productDto.AmountAvailable <= 0)
                 throw new ArgumentException(ExceptionMessages.InvalidProductCostOrAmount);
 
             // Get product to be Updated
@@ -59,7 +55,7 @@ namespace VendingMachineApi.Services
             // if couldn't find return null
             if (productToBeUpdated is null) return null;
             // check that sent sellerId matches sellerId on return product (user sent in sellerId owns this product)
-            if (productToBeUpdated.SellerId != sellerId) 
+            if (productToBeUpdated.SellerId != sellerId)
                 throw new UnauthorizedAccessException(ExceptionMessages.UnAuthorizedSeller);
 
             // map new values to the product entity
@@ -77,14 +73,14 @@ namespace VendingMachineApi.Services
         public async Task<Product?> DeleteProductAsync(int productId, string sellerId)
         {
             // Check for valid product id (positive number) and seller id (non null/empty string)
-            if (productId <= 0 || string.IsNullOrEmpty(sellerId)) 
+            if (productId <= 0 || string.IsNullOrEmpty(sellerId))
                 throw new ArgumentException(ExceptionMessages.InvalidEntitytId);
 
             // Chech the product exists in database
             var productToBeDeleted = await GetProductByIdAsync(productId);
             if (productToBeDeleted is null) return null;
             // check that sent sellerId matches sellerId on return product (user sent in sellerId owns this product)
-            if (productToBeDeleted.SellerId != sellerId) 
+            if (productToBeDeleted.SellerId != sellerId)
                 throw new UnauthorizedAccessException(ExceptionMessages.UnAuthorizedSeller);
 
             // Delete product the save changes

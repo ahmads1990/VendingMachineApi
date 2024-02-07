@@ -1,15 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using VendingMachineApi.Dtos;
-using VendingMachineApi.Helpers;
-using VendingMachineApi.Models;
-using VendingMachineApi.Services.Interfaces;
 
 namespace VendingMachineApi.Services
 {

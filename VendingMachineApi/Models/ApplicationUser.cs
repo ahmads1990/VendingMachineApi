@@ -2,7 +2,7 @@
 
 namespace VendingMachineApi.Models
 {
-    public class ApplicationUser: IdentityUser
+    public class ApplicationUser : IdentityUser
     {
         public int Deposit { get; set; }
     }

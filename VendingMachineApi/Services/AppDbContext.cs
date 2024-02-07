@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-using VendingMachineApi.Models;
-
 namespace VendingMachineApi.Services
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>

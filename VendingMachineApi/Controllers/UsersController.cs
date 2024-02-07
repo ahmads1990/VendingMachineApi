@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VendingMachineApi.Dtos;
-using VendingMachineApi.Services.Interfaces;
 
 namespace VendingMachineApi.Controllers
 {
