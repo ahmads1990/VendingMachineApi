@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VendingMachineApi.Helpers;
 using VendingMachineApi.Models;
 using VendingMachineApi.Services;
 using VendingMachineApi.Services.Interfaces;
@@ -129,8 +130,10 @@ namespace VendingMachineApi.Tests
             // Arrange
             var newProduct = new Product { ProductId = 6, ProductName = "Product6", AmountAvailable = 12, Cost = 30, SellerId = "s2" };
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.AddNewProduct(newProduct));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntitytId));
         }
         [Test]
         public async Task AddNewProduct_InValidName_Throw()
@@ -138,8 +141,10 @@ namespace VendingMachineApi.Tests
             // Arrange
             var newProduct = new Product { ProductName = null, AmountAvailable = 12, Cost = 30, SellerId = "s2" };
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.AddNewProduct(newProduct));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntityData));
         }
         [Test]
         public void AddNewProduct_InValidAmountAvailable_Throw()
@@ -147,8 +152,10 @@ namespace VendingMachineApi.Tests
             // Arrange
             var newProduct = new Product { ProductName = "Product6", AmountAvailable = 0, Cost = 30, SellerId = "s2" };
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.AddNewProduct(newProduct));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidProductCostOrAmount));
         }
         [Test]
         public async Task AddNewProduct_InValidCost_Throw()
@@ -156,8 +163,10 @@ namespace VendingMachineApi.Tests
             // Arrange
             var newProduct = new Product { ProductName = "Product6", AmountAvailable = 12, Cost = 0, SellerId = "s2" };
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.AddNewProduct(newProduct));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidProductCostOrAmount));
         }
         [Test]
         public async Task AddNewProduct_InValidCostNotDividableBy5_Throw()
@@ -165,8 +174,10 @@ namespace VendingMachineApi.Tests
             // Arrange
             var newProduct = new Product { ProductName = "Product6", AmountAvailable = 12, Cost = 3, SellerId = "s2" };
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.AddNewProduct(newProduct));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidProductCostOrAmount));
         }
         // UpdateProductAsync
         [Test]
@@ -189,8 +200,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = -1, ProductName = "UpdatedProduct1", AmountAvailable = 6, Cost = 15 };
             string sellerId = "s1";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntitytId));
         }
         [Test]
         public async Task UpdateProductAsync_InvalidName_Throw()
@@ -199,8 +212,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = 1, ProductName = "", AmountAvailable = 6, Cost = 15 };
             string sellerId = "s1";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntityData));
         }
         [Test]
         public async Task UpdateProductAsync_InvalidAmountAvailable_Throw()
@@ -209,8 +224,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = 1, ProductName = "UpdatedProduct1", AmountAvailable = 0, Cost = 15 };
             string sellerId = "s1";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidProductCostOrAmount));
         }
         [Test]
         public async Task UpdateProductAsync_InvalidCost_Throw()
@@ -219,8 +236,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = 1, ProductName = "UpdatedProduct1", AmountAvailable = 6, Cost = 0 };
             string sellerId = "s1";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidProductCostOrAmount));
         }
         [Test]
         public async Task UpdateProductAsync_InValidCostNotDividableBy5_Throw()
@@ -229,8 +248,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = 1, ProductName = "UpdatedProduct1", AmountAvailable = 6, Cost = 3 };
             string sellerId = "s1";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidProductCostOrAmount));
         }
         [Test]
         public async Task UpdateProductAsync_NotOwnerSeller_Throw()
@@ -239,8 +260,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = 1, ProductName = "UpdatedProduct1", AmountAvailable = 6, Cost = 15 };
             string sellerId = "s2";
             // Act
-            var result = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+            var exception = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.UnAuthorizedSeller));
         }
         [Test]
         public async Task UpdateProductAsync_InvalidSellerId_Throw()
@@ -249,8 +272,10 @@ namespace VendingMachineApi.Tests
             var updatedProductDto = new Dtos.ProductDto { ProductId = -1, ProductName = "UpdatedProduct1", AmountAvailable = 6, Cost = 15 };
             string sellerId = "";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             await _productService.UpdateProductAsync(updatedProductDto, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntitytId));
         }
         // DeleteProductAsync
         [Test]
@@ -289,8 +314,10 @@ namespace VendingMachineApi.Tests
             int testId = 0;
             string sellerId = product.SellerId;
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async()=>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async()=>
                 await _productService.DeleteProductAsync(productIndex, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntitytId));
         }
         [Test]
         public async Task DeleteProductAsync_NotOwnerSeller_Throw()
@@ -301,8 +328,10 @@ namespace VendingMachineApi.Tests
             int testId = product.ProductId;
             string sellerId = "s2";
             // Act
-            var result = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+            var exception = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
                 await _productService.DeleteProductAsync(testId, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.UnAuthorizedSeller));
         }
         [Test]
         public async Task DeleteProductAsync_InvalidSellerId_Throw()
@@ -313,8 +342,10 @@ namespace VendingMachineApi.Tests
             int testId = product.ProductId;
             string sellerId = "";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
                 await _productService.DeleteProductAsync(productIndex, sellerId));
+
+            Assert.That(exception.Message, Is.EqualTo(ExceptionMessages.InvalidEntitytId));
         }
     }
 }
