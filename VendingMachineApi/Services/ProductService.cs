@@ -72,9 +72,14 @@ namespace VendingMachineApi.Services
         }
         public async Task<Product?> DeleteProductAsync(int productId, string sellerId)
         {
+            // Check for valid product id (positive number) and seller id (non null/empty string)
+            if (productId<= 0 || string.IsNullOrEmpty(sellerId)) throw new ArgumentException("");
+
             // Chech the product exists in database
             var productToBeDeleted = await GetProductByIdAsync(productId);
             if (productToBeDeleted is null) return null;
+            // check that sent sellerId matches sellerId on return product (user sent in sellerId owns this product)
+            if (productToBeDeleted.SellerId != sellerId) throw new UnauthorizedAccessException("You can only update/remove your owned products");
 
             // Delete product the save changes
             _dbContext.Products.Remove(productToBeDeleted);

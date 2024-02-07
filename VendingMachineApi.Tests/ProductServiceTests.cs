@@ -301,8 +301,8 @@ namespace VendingMachineApi.Tests
             int testId = product.ProductId;
             string sellerId = "s2";
             // Act
-            var result = Assert.ThrowsAsync<ArgumentException>(async () =>
-                await _productService.DeleteProductAsync(productIndex, sellerId));
+            var result = Assert.ThrowsAsync<UnauthorizedAccessException>(async () =>
+                await _productService.DeleteProductAsync(testId, sellerId));
         }
         [Test]
         public async Task DeleteProductAsync_InvalidSellerId_Throw()
