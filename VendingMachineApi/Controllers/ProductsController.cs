@@ -13,11 +13,13 @@ namespace VendingMachineApi.Controllers
         private readonly ILogger<ProductsController> _logger;
         private readonly IProductService _productService;
         private readonly IUserService _userService;
-        public ProductsController(IProductService productService, ILogger<ProductsController> logger, IUserService userService)
+        private readonly ICoinService _coinService;
+        public ProductsController(IProductService productService, ILogger<ProductsController> logger, IUserService userService, ICoinService coinService)
         {
             _productService = productService;
             _logger = logger;
             _userService = userService;
+            _coinService = coinService;
         }
         // Get All
         [HttpGet("GetAllProducts")]
@@ -194,7 +196,8 @@ namespace VendingMachineApi.Controllers
                 // TODO add money to the seller
 
                 // send user their cash
-                return Ok("Here is your change");
+                var returnMessage = _coinService.GetCoinValuesString(10);
+                return Ok(returnMessage);
             }
             catch (Exception ex)
             {
