@@ -10,20 +10,22 @@ Link here if deployed on a external service
 
 -   [Introduction](#introduction)
 -   [Technologies](#technologies)
+-   [Project walkthrough](#project-walkthrough)
 -   [Features](#features)
     -   [Future features](#future-features)
 -   [Getting Started](#getting-started)
     -   [Prerequisites](#prerequisites)
     -   [Installation](#installation)
--   [Project walkthrough](#project-walkthrough)
--   [Contributing](#contributing)
-    -   [Suggesting ideas](#suggesting-ideas)
-    -   [How to Contribute](#how-to-contribute)
-    -   [Reporting Bugs](#reporting-bugs)
 
 ## Introduction
 
-This project is a vending machine rest api done as a FlapKap’s Backend challenge
+This project is a vending machine rest api done as a FlapKap’s Backend challenge to create REST api
+
+-   I created a REST api with access to database (ef core), JWT security (Identity), Logging (Serilog)
+-   Testing (Nunit, Moq, sqlite in memory) methodology
+    -   Tested products service ensuring correct logic and exception handling
+    -   Tested user controller endpoints for correct routes response
+    -   Todo: Test products controller for correct endpoints routes responses
 
 ## Technologies
 
@@ -39,10 +41,17 @@ Additional used
 -   Sql server
 -   Identity
 
-## Outline
+## Project walkthrough
+
+### Outline [🔼](#table-of-contents)
 
 For better quality check the file ["Outline.jpg"](Outline.jpg)
 ![Project Outline](Outline.jpg)
+
+### Database schema [🔼](#table-of-contents)
+
+For better quality check the file ["Schema.jpg"](Schema.png)
+![Database Schema ](Schema.png)
 
 ## Features [🔼](#table-of-contents)
 
@@ -57,17 +66,17 @@ Highlight the key features of the project
 
 ## Getting Started [🔼](#table-of-contents)
 
-### Prerequisites
+### Prerequisites [🔼](#table-of-contents)
 
     -   Git
     -   DotNet 8
     -   SqlServer
 
-### Postman
+### Postman [🔼](#table-of-contents)
 
 I have created a Postman collection with available endpoints. You can use it as a reference on how to use the API. Find the documentation [here](https://documenter.getpostman.com/view/29637594/2s9Yyy9ea4).
 
-### Installation
+### Installation [🔼](#table-of-contents)
 
 Steps to install and run this project locally
 
@@ -75,12 +84,14 @@ Steps to install and run this project locally
     ```bash
     git clone github.com/ahmads1990/VendingMachineApi
     ```
--   Step 2 setup configuration
+-   Step 2
 
-    ```json
-    {
-    	"ConnectionStrings": {
-    		"DefaultConnection": "Your connection string"
-    	}
-    }
-    ```
+    -   Using(SQL SERVER main branch) change the Connection String to match your local sql server
+
+        ```json
+        {
+        	"ConnectionStrings": {
+        		"DefaultConnection": "Your connection string"
+        	}
+        }
+        ```
