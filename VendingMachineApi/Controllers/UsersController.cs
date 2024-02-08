@@ -36,6 +36,15 @@ namespace VendingMachineApi.Controllers
             //Todo send confirmation mail
             return Ok(result);
         }
+        [HttpGet("mybalance")]
+        [Authorize]
+        public async Task<IActionResult> GetUserOwnBalance()
+        {
+            // Get user id
+            var userId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
+            var balance = await _userService.GetUserBalance(userId);
+            return Ok($"Your balance is: {balance}");
+        }
         [HttpPut("Deposit")]
         [Authorize]
         public async Task<IActionResult> AddToDeposit([FromQuery]int addDeposit)

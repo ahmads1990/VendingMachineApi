@@ -118,6 +118,16 @@ namespace VendingMachineApi.Services
 
             return jwtSecurityToken;
         }
+        public async Task<int> GetUserBalance(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentException(ExceptionMessages.InvalidEntitytId);
+            // Find the user by ID
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+                throw new ArgumentException(ExceptionMessages.EntityDoesntExist);
+            return user.Deposit;
+        }
         public async Task<bool> CheckHaveEnoughDeposit(string userId, int deposit)
         {
             // Check if the deposit value is valid
