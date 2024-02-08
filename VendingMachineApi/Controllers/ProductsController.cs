@@ -194,9 +194,16 @@ namespace VendingMachineApi.Controllers
                 productDto.AmountAvailable -= buyProductModel.Quantity;
                 var updatedProduct = await _productService.UpdateProductAsync(productDto, product.SellerId);
                 // TODO add money to the seller
+                // Reset buy money
+                UpdateDepositModel updateDepositModel = new UpdateDepositModel
+                {
+                    BuyerId = buyerId,
+                    Deposit = 0,
+                };
 
+                var result = await _userService.BuyerResetDepositAsync(updateDepositModel);
                 // send user their cash
-                var returnMessage = _coinService.GetCoinValuesString(10);
+                var returnMessage = _coinService.GetCoinValuesString(result.Deposit);
                 return Ok(returnMessage);
             }
             catch (Exception ex)
