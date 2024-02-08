@@ -56,7 +56,7 @@ namespace VendingMachineApi.Controllers
             if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISSELLER)) return Unauthorized(ExceptionMessages.OnlySellerUser);
 
             // Check that seller user (id == target id), seller can only check owned products
-            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
             if (sellerId != userId) return Unauthorized(ExceptionMessages.UnAuthorizedSeller);
 
             var sellerProducts = await _productService.GetProductsBySellerIdAsync(sellerId);
@@ -75,7 +75,7 @@ namespace VendingMachineApi.Controllers
             try
             {
                 // get seller id
-                var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                var sellerId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
                 // Map dto to model and add user(seller) id into the new model
                 var newProduct = new Product
                 {
@@ -104,7 +104,7 @@ namespace VendingMachineApi.Controllers
             try
             {
                 // get seller id
-                var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                var sellerId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
 
                 var response = await _productService.UpdateProductAsync(productDto, sellerId);
                 if (response is null)
@@ -137,7 +137,7 @@ namespace VendingMachineApi.Controllers
             try
             {
                 // get seller id
-                var sellerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                var sellerId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
                 // send product and seller ids to product service to delete the product
                 var response = await _productService.DeleteProductAsync(productId, sellerId);
                 if (response is null)
@@ -158,25 +158,29 @@ namespace VendingMachineApi.Controllers
         [HttpPost("Buy")]
         public async Task<IActionResult> BuyProduct(BuyProductModel buyProductModel)
         {
+            if (buyProductModel.Quantity <= 0)
+                return BadRequest(ExceptionMessages.InvalidProductCostOrAmount);
             // check that sender is a buyer user
             if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISBUYER))
                 return Unauthorized(ExceptionMessages.OnlyBuyerUser);
             try
             {
                 // get buyer id
-                var buyerId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+                var buyerId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
                 // get product
                 var product = await _productService.GetProductByIdAsync(buyProductModel.ProductId);
+                if (product is null)
+                    return NotFound(ExceptionMessages.EntityDoesntExist);
                 // Check amount
                 if (product.AmountAvailable < buyProductModel.Quantity)
-                    return BadRequest();
+                    return BadRequest($"Required quantity ({buyProductModel.Quantity}) is higher than Amount Available {product.AmountAvailable}");
                 // Enough amount can be purchased, Check users balance
                 int orderCost = buyProductModel.Quantity * product.Cost;
                 var canUserAffordIt = await _userService.CheckHaveEnoughDeposit(buyerId, orderCost);
                 if (!canUserAffordIt)
                     return BadRequest("You cannot afford it");
                 // All Checks done procceed to do it
-                // update product amount
+                // create ProductDto to update the product remaning quantity
                 var productDto = new ProductDto
                 {
                     ProductId = product.ProductId,
@@ -184,6 +188,7 @@ namespace VendingMachineApi.Controllers
                     Cost = product.Cost,
                     ProductName = product.ProductName
                 };
+                // update product amount
                 productDto.AmountAvailable -= buyProductModel.Quantity;
                 var updatedProduct = await _productService.UpdateProductAsync(productDto, product.SellerId);
                 // TODO add money to the seller
@@ -191,10 +196,9 @@ namespace VendingMachineApi.Controllers
                 // send user their cash
                 return Ok("Here is your change");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                return BadRequest(ex);
             }
         }
     }
