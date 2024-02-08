@@ -39,6 +39,11 @@ Additional used
 -   Sql server
 -   Identity
 
+## Outline
+
+For better quality check the file ["Outline.jpg"](Outline.jpg)
+![Project Outline](Outline.jpg)
+
 ## Features [🔼](#table-of-contents)
 
 Highlight the key features of the project
@@ -56,6 +61,11 @@ Highlight the key features of the project
 
     -   Git
     -   DotNet 8
+    -   SqlServer
+
+### Postman
+
+I have created a Postman collection with available endpoints. You can use it as a reference on how to use the API. Find the documentation [here](https://documenter.getpostman.com/view/29637594/2s9Yyy9ea4).
 
 ### Installation
 
