@@ -24,7 +24,7 @@ builder.Services.AddSwaggerGen();
 
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlite("Data Source=mydatabase.db"));
 
 // Security
 // configure jwt helper class to use jwt config info
@@ -71,6 +71,12 @@ builder.Services.AddScoped<ICoinService, CoinService>();
 
 var app = builder.Build();
 
+// Auto migrations
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
