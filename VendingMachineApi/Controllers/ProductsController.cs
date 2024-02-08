@@ -34,7 +34,7 @@ namespace VendingMachineApi.Controllers
             return Ok(allProducts);
         }
         // Get by id
-        [HttpGet("{productId}")]
+        [HttpGet("GetById")]
         [AllowAnonymous]
         public async Task<IActionResult> GetProductById(int productId)
         {
@@ -46,7 +46,7 @@ namespace VendingMachineApi.Controllers
             return Ok(product);
         }
         // Get User's products by user id
-        [HttpGet("getSellerProducts/{sellerId}")]
+        [HttpGet("getSellerProducts")]
         public async Task<IActionResult> GetProductBySellerId(string sellerId)
         {
             // if sending no seller id that is bad requset
