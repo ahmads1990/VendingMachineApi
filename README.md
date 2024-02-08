@@ -95,3 +95,5 @@ Steps to install and run this project locally
         	}
         }
         ```
+
+    -   Using(sqlite sqlite branch) for faster startup you can clone and run this project (with local sqlite db file) without having to download sql server
