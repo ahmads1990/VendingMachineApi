@@ -36,15 +36,15 @@ namespace VendingMachineApi.Controllers
             //Todo send confirmation mail
             return Ok(result);
         }
-        [HttpPut("Deposit/{addDeposit}")]
+        [HttpPut("Deposit")]
         [Authorize]
-        public async Task<IActionResult> AddToDeposit(int addDeposit)
+        public async Task<IActionResult> AddToDeposit([FromQuery]int addDeposit)
         {
             // check that user sending the requset is a buyer if not return bad request 
             if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISBUYER))
                 return Unauthorized(ExceptionMessages.OnlyBuyerUser);
 
-            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
             UpdateDepositModel updateDepositModel = new UpdateDepositModel
             {
                 BuyerId = userId,
@@ -65,7 +65,7 @@ namespace VendingMachineApi.Controllers
             if (!User.Claims.Any(c => c.Type == CustomClaimTypes.ISBUYER))
                 return Unauthorized(ExceptionMessages.OnlyBuyerUser);
 
-            var userId = User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = User.Claims.First(c => c.Type == CustomClaimTypes.UserId).Value;
             UpdateDepositModel updateDepositModel = new UpdateDepositModel
             {
                 BuyerId = userId,
